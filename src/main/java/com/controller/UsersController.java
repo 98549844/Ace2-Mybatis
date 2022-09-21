@@ -37,7 +37,7 @@ public class UsersController extends CommonController {
     @RequestMapping(method = RequestMethod.GET, value = "/update")
     public Users updateUserByMybatisPlus() {
         log.info("select statement MUST NOT include common column !!!");
-        Users users = new Users();
+        Users users;
         String acc = "garlam";
         int id = 533;
         users = usersMapper.selectByAccountWithoutCommonColumn(acc);
