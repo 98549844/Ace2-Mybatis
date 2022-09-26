@@ -15,6 +15,9 @@
     <description>acemybatis</description>
     <properties>
         <java.version>17</java.version>
+        <spring>5.3.23</spring>
+        <springboot>2.7.3</springboot>
+        <mybatisplus>3.5.2</mybatisplus>
     </properties>
     <dependencies>
         <dependency>
@@ -22,36 +25,47 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+            <scope>test</scope>
+            <version>${springboot}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.9.9.1</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>2.2.2</version>
         </dependency>
-      <!--  <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus</artifactId>
-            <version>3.5.2</version>
-        </dependency>-->
+        <!--  <dependency>
+              <groupId>com.baomidou</groupId>
+              <artifactId>mybatis-plus</artifactId>
+              <version>3.5.2</version>
+          </dependency>-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.5.2</version>
+            <version>${mybatisplus}</version>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus</artifactId>
-            <version>3.5.2</version>
+            <version>${mybatisplus}</version>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-annotation</artifactId>
-            <version>3.5.2</version>
+            <version>${mybatisplus}</version>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-extension</artifactId>
-            <version>3.5.2</version>
+            <version>${mybatisplus}</version>
         </dependency>
-
 
 
         <dependency>
@@ -74,8 +88,6 @@
 
 
     </dependencies>
-
-
 
 
     <build>

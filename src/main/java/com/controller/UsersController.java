@@ -24,7 +24,7 @@ import java.util.List;
  */
 
 @Controller
-public class UsersController extends CommonController {
+public class UsersController {
     private static Logger log = LogManager.getLogger(UsersController.class.getName());
 
     private UsersMapper usersMapper;
@@ -36,10 +36,10 @@ public class UsersController extends CommonController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/update")
     public Users updateUserByMybatisPlus() {
-        log.info("select statement MUST NOT include common column !!!");
         Users users;
         String acc = "garlam";
         int id = 533;
+        log.info("select statement MUST NOT include common column !!!");
         users = usersMapper.selectByAccountWithoutCommonColumn(acc);
 
         Users u = usersMapper.selectById(533);
@@ -83,7 +83,6 @@ public class UsersController extends CommonController {
     @RequestMapping(method = RequestMethod.GET, value = "/findUserByMybatis/{acc}")
     public Users findUserByMybatis(@PathVariable String acc) {
         Users users = usersMapper.selectById(533);
-
         return users;
     }
 
