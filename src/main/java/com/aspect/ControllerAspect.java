@@ -18,8 +18,8 @@ import org.springframework.stereotype.Component;
  */
 
 
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class ControllerAspect {
     //https://www.cnblogs.com/duoshou/articles/8033775.html
     private static final Logger log = LogManager.getLogger(ControllerAspect.class.getName());

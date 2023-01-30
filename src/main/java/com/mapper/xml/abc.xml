@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.UsersMapper">
+    <resultMap id="BaseResultMapAbc" type="com.models.Users">
+        <id column="userId" jdbcType="BIGINT" property="userId"/>
+        <result column="createdBy" jdbcType="BIGINT" property="createdBy"/>
+        <result column="createdDate" jdbcType="TIMESTAMP" property="createdDate"/>
+        <result column="lastUpdateDate" jdbcType="TIMESTAMP" property="lastUpdateDate"/>
+        <result column="lastUpdatedBy" jdbcType="BIGINT" property="lastUpdatedBy"/>
+        <result column="version" jdbcType="INTEGER" property="version"/>
+        <result column="age" jdbcType="BIGINT" property="age"/>
+        <result column="dateOfBirth" jdbcType="TIMESTAMP" property="dateOfBirth"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="domain" jdbcType="VARCHAR" property="domain"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="enabled" jdbcType="BIT" property="enabled"/>
+        <result column="expireDate" jdbcType="TIMESTAMP" property="expireDate"/>
+        <result column="gender" jdbcType="VARCHAR" property="gender"/>
+        <result column="hostName" jdbcType="VARCHAR" property="hostName"/>
+        <result column="ip" jdbcType="VARCHAR" property="ip"/>
+        <result column="loginDateTime" jdbcType="TIMESTAMP" property="loginDateTime"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="userAccount" jdbcType="VARCHAR" property="userAccount"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+    </resultMap>
+    <sql id="Base_Column_List_Abc">
+        userId, createdBy, createdDate, lastUpdateDate, lastUpdatedBy, version, age, dateOfBirth,
+     description, `domain`, email, enabled, expireDate, gender, hostName, ip, loginDateTime,
+     mobile, `password`, remark, `status`, userAccount, username
+    </sql>
+
+    <sql id="Base_Column_List_Without_Common_Column_Abc">
+        userId, version, age, dateOfBirth,
+     description, `domain`, email, enabled, expireDate, gender, hostName, ip, loginDateTime,
+     mobile, `password`, remark, `status`, userAccount, username
+    </sql>
+
+
+
+    <select id="selectAll" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List_Abc"/>
+        from users
+    </select>
+
+
+
+</mapper>

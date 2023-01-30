@@ -31,6 +31,8 @@ public interface UsersMapper extends BaseMapper<Users> {
 
     List<Users> findAll();
 
+    List<Users> selectAll(); // mapper and xml 不同名字
+
     List<Users> findUsersLikeNameByMybatis(String userName);
 
     int updateByPrimaryKeySelective(Users record);

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -86,5 +87,16 @@ public class UsersController {
         return users;
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/selectAll")
+    @ResponseBody
+    public List<Users> selectAll() {
+
+        List<Users> users1 = usersMapper.findAll();
+        System.out.println("same mapper and xml : " + users1.size());
+
+        List<Users> users2 = usersMapper.selectAll();
+        System.out.println("not same mapper and xml : " + users2.size());
+        return users1;
+    }
 }
 
