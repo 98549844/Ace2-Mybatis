@@ -25,7 +25,6 @@ public class MapperAspect {
     }
 
 
-
     @Before(value = "execution(* com.ace2.mybatis.mapper.*.*(..))&&args(record)", argNames = "record")
     public void beforeUpdate(Users record) {
         String type = TypeUtil.getType(record);
