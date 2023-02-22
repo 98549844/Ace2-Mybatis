@@ -1,6 +1,7 @@
 package com.ace2.mybatis.restController;
 
 import com.ace2.mybatis.mapper.MpfaMapper;
+import com.ace2.mybatis.service.MpfaService;
 import com.ace2.mybatis.models.Function;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,11 +25,13 @@ public class MpfaRestController {
     private static final Logger log = LogManager.getLogger(MpfaRestController.class.getName());
 
     private final MpfaMapper mpfaMapper;
+    private final MpfaService mpfaService;
 
 
     @Autowired
-    public MpfaRestController(MpfaMapper mpfaMapper) {
+    public MpfaRestController(MpfaMapper mpfaMapper, MpfaService mpfaService) {
         this.mpfaMapper = mpfaMapper;
+        this.mpfaService = mpfaService;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/mpfa/isAuthorized")
@@ -57,6 +60,27 @@ public class MpfaRestController {
         boolean c = mpfaMapper.isAuthorized(applId, funcId, userId);
         System.out.println("C:   " + c);
 
+        return false;
+    }
+
+
+    @RequestMapping(method = RequestMethod.GET, value = "/mpfa/getFunctions")
+    public boolean getFunctions() {
+        String applId = "FWFMG";
+        String funcId = "FMG001S01";
+        String userId = "USER1";
+
+        List<Function> functions = mpfaService.getFunctions(applId, funcId);
+        List<Function> childFunctions = mpfaService.getFunctions(applId, funcId, userId);
+
+        for (Function f : functions) {
+            System.out.println(f);
+        }
+        System.out.println("------------------------");
+
+        for (Function f : childFunctions) {
+            System.out.println(f);
+        }
 
         return false;
     }

@@ -126,81 +126,46 @@
           and UPF.UPF_USER_ID = #{userId}
     </sql>
 
-    <!--    <select id="isAuthorized2" resultMap="FunctionResultMap" parameterType="HashMap" >
-            select
-            a.*
-            from
-            ${R_}FNC_FUNCTION a
-            , ${R_}FAG_FUNCTION_ACC_GRP b
-            where
-            a.FNC_APPL_ID = #{applId}
-            and a.FNC_FUNC_ID = #{funcId}
-            and b.FAG_APPL_ID = a.FNC_APPL_ID
-            and b.FAG_PARENT_FUNC_ID = a.FNC_PARENT_FUNC_ID
-            and b.FAG_FUNC_ID = a.FNC_FUNC_ID
-            and b.FAG_ACC_GRP_ID in (
-            <include refid="getAccGroupsByUserId"/>
-            )
-            order by
-            a.FNC_PARENT_FUNC_ID
-            , a.FNC_FUNC_SEQ
-        </select>
 
-        <sql id="getAccGroupsByUserId">
-            select
-                AAG.AAG_ACC_GRP_ID
-            from
-                ${R_}UAD_USER_AD_GRP UAG
-               , ${R_}ADG_AD_GRP ADG
-               , ${R_}AAG_AD_GRP_ACC_GRP AAG
-               , ${R_}ACG_ACC_GRP ACG
-               , ${R_}UPF_USER_PROFILE UPF
-            where
-                UAG.UAD_USER_ID = #{userId}
-              and UAG.UAD_AD_GRP_ID = ADG.ADG_AD_GRP_ID
-              and ADG.ADG_AD_GRP_ID = AAG.AAG_AD_GRP_ID
-              and AAG.AAG_ACC_GRP_ID = ACG.ACG_ACC_GRP_ID
-              and UAG.UAD_USER_ID = UPF.UPF_USER_ID
-              and ADG.ADG_VOID_STS = 'N'
-              and ACG.ACG_VOID_STS = 'N'
-              and UPF.UPF_STATUS = 'ACT'
-            UNION
-            select
-                UAC.UAC_ACC_GRP_ID
-            from
-                ${R_}UAC_USER_ACC_GRP UAC
-               , ${R_}ACG_ACC_GRP ACG
-               , ${R_}UPF_USER_PROFILE UPF
-            where
-                UAC.UAC_USER_ID = #{userId}
-              and UAC.UAC_ACC_GRP_ID = ACG.ACG_ACC_GRP_ID
-              and UAC.UAC_USER_ID = UPF.UPF_USER_ID
-              and ACG.ACG_VOID_STS = 'N'
-              and UPF.UPF_STATUS = 'ACT'
-            UNION
-            select
-                DRA.DRA_ACC_GRP_ID
-            from
-                ${R_}UPF_USER_PROFILE UPF
-               , ${R_}DRA_DEPT_RANK_ACC_GRP DRA
-               , ${R_}DEP_DEPT DEP
-               , ${R_}RAN_RANK RAN
-               , ${R_}DTR_DEPT_RANK DTR
-               , ${R_}ACG_ACC_GRP ACG
-            where
-                UPF.UPF_DEPARTMENT = DEP.DEP_CODE
-              and UPF.UPF_RANK = RAN.RAN_CODE
-              and DEP.DEP_CODE = DTR.DTR_DEPT
-              and RAN.RAN_CODE = DTR.DTR_RANK
-              and DTR.DTR_DEPT = DRA.DRA_DEPT
-              and DTR.DTR_RANK = DRA.DRA_RANK
-              and ACG.ACG_ACC_GRP_ID = DRA.DRA_ACC_GRP_ID
-              and DEP.DEP_VOID_STS = 'N'
-              and RAN.RAN_VOID_STS = 'N'
-              and DTR.DTR_VOID_STS = 'N'
-              and UPF.UPF_STATUS = 'ACT'
-              and ACG.ACG_VOID_STS = 'N'
-              and UPF.UPF_USER_ID = #{userId}
-        </sql>-->
+    <select id="getFunctions" resultMap="FunctionResultMap" parameterType="HashMap" >
+        select distinct
+        a.*
+        from
+        R_FNC_FUNCTION a
+        , R_FAG_FUNCTION_ACC_GRP b
+        where
+        a.FNC_APPL_ID = #{applId}
+        and b.FAG_APPL_ID = a.FNC_APPL_ID
+        and b.FAG_PARENT_FUNC_ID = a.FNC_PARENT_FUNC_ID
+        and b.FAG_FUNC_ID = a.FNC_FUNC_ID
+        and b.FAG_ACC_GRP_ID in (
+        <include refid="getAccGroupsByUserId"/>
+        )
+        order by
+        a.FNC_PARENT_FUNC_ID
+        , a.FNC_FUNC_SEQ
+    </select>
+
+    <select id="getChildFunctions" resultMap="FunctionResultMap" parameterType="HashMap" >
+        select distinct
+        a.*
+        from
+        R_FNC_FUNCTION a
+        , R_FAG_FUNCTION_ACC_GRP b
+        where
+        a.FNC_APPL_ID = #{applId}
+        and a.FNC_PARENT_FUNC_ID = #{funcId}
+        and b.FAG_APPL_ID = a.FNC_APPL_ID
+        and b.FAG_PARENT_FUNC_ID = a.FNC_PARENT_FUNC_ID
+        and b.FAG_FUNC_ID = a.FNC_FUNC_ID
+        and b.FAG_ACC_GRP_ID in (
+        <include refid="getAccGroupsByUserId"/>
+        )
+        order by
+        a.FNC_PARENT_FUNC_ID
+        , a.FNC_FUNC_SEQ
+    </select>
+
+
 
 </mapper>
