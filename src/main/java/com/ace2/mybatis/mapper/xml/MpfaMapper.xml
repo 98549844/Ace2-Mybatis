@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ace2.mybatis.mapper.MpfaMapper">
+
+    <resultMap type="com.ace2.mybatis.models.Function" id="FunctionResultMap">
+        <result column="FNC_APPL_ID" jdbcType="VARCHAR" property="applId"/>
+        <result column="FNC_PARENT_FUNC_ID" jdbcType="VARCHAR" property="parentFuncId"/>
+        <result column="FNC_FUNC_ID" jdbcType="VARCHAR" property="funcId"/>
+        <result column="FNC_DESC" jdbcType="VARCHAR" property="description"/>
+        <result column="FNC_CREATE_DT" jdbcType="TIMESTAMP" property="created"/>
+        <result column="FNC_CREATE_USER" jdbcType="VARCHAR" property="createdBy"/>
+        <result column="FNC_MODIFY_DT" jdbcType="TIMESTAMP" property="lastModified"/>
+        <result column="FNC_MODIFY_USER" jdbcType="VARCHAR" property="lastModifiedBy"/>
+        <result column="FNC_FUNC_TYP" jdbcType="VARCHAR" property="funcType"/>
+        <result column="FNC_FUNC_SEQ" jdbcType="DECIMAL" property="funcSeq"/>
+        <result column="FNC_LINK" jdbcType="VARCHAR" property="link"/>
+        <result column="FNC_ONCLICK" jdbcType="VARCHAR" property="onclick"/>
+        <result column="FNC_SHOWN_ON_MENU" jdbcType="VARCHAR" property="shownOnMenu"/>
+        <result column="FNC_POP_UP" jdbcType="VARCHAR" property="popUp"/>
+        <result column="FNC_POP_UP_WIDTH" jdbcType="DECIMAL" property="popUpWidth"/>
+        <result column="FNC_POP_UP_HEIGHT" jdbcType="DECIMAL" property="popUpHeight"/>
+        <result column="FNC_PATH" jdbcType="VARCHAR" property="path"/>
+        <result column="FNC_PATH_PARAM" jdbcType="VARCHAR" property="pathParam"/>
+        <result column="FNC_SCREEN_ID" jdbcType="VARCHAR" property="screenId"/>
+        <result column="FNC_PROG_CLASS" jdbcType="VARCHAR" property="progClass"/>
+    </resultMap>
+
+    <select id="isExist" resultType="java.lang.Boolean" parameterType="java.lang.String">
+        SELECT 'true'
+        FROM dual
+    </select>
+
+    <select id="isNotExist" resultType="java.lang.Boolean" parameterType="java.lang.String">
+        SELECT 'false'
+        FROM dual
+    </select>
+
+    <select id="isAuthorized" resultType="java.lang.Boolean" parameterType="java.lang.String">
+        SELECT CASE WHEN MAX(FNC_APPL_ID) IS NULL THEN 'false' ELSE 'true' END User_exists
+        FROM (
+        select
+        a.*
+        from
+        R_FNC_FUNCTION a
+        , R_FAG_FUNCTION_ACC_GRP b
+        where
+        a.FNC_APPL_ID = #{applId}
+        and a.FNC_FUNC_ID = #{funcId}
+        and b.FAG_APPL_ID = a.FNC_APPL_ID
+        and b.FAG_PARENT_FUNC_ID = a.FNC_PARENT_FUNC_ID
+        and b.FAG_FUNC_ID = a.FNC_FUNC_ID
+        and b.FAG_ACC_GRP_ID in (
+        <include refid="getAccGroupsByUserId"/>
+        )
+        order by
+        a.FNC_PARENT_FUNC_ID
+        , a.FNC_FUNC_SEQ)
+    </select>
+
+
+    <select id="isAuthorized2" resultMap="FunctionResultMap" parameterType="HashMap">
+        select
+        a.*
+        from
+        R_FNC_FUNCTION a
+        , R_FAG_FUNCTION_ACC_GRP b
+        where
+        a.FNC_APPL_ID = #{applId}
+        and a.FNC_FUNC_ID = #{funcId}
+        and b.FAG_APPL_ID = a.FNC_APPL_ID
+        and b.FAG_PARENT_FUNC_ID = a.FNC_PARENT_FUNC_ID
+        and b.FAG_FUNC_ID = a.FNC_FUNC_ID
+        and b.FAG_ACC_GRP_ID in (
+        <include refid="getAccGroupsByUserId"/>
+        )
+        order by
+        a.FNC_PARENT_FUNC_ID
+        , a.FNC_FUNC_SEQ
+    </select>
+
+    <sql id="getAccGroupsByUserId">
+        select AAG.AAG_ACC_GRP_ID
+        from R_UAD_USER_AD_GRP UAG
+           , R_ADG_AD_GRP ADG
+           , R_AAG_AD_GRP_ACC_GRP AAG
+           , R_ACG_ACC_GRP ACG
+           , R_UPF_USER_PROFILE UPF
+        where UAG.UAD_USER_ID = #{userId}
+          and UAG.UAD_AD_GRP_ID = ADG.ADG_AD_GRP_ID
+          and ADG.ADG_AD_GRP_ID = AAG.AAG_AD_GRP_ID
+          and AAG.AAG_ACC_GRP_ID = ACG.ACG_ACC_GRP_ID
+          and UAG.UAD_USER_ID = UPF.UPF_USER_ID
+          and ADG.ADG_VOID_STS = 'N'
+          and ACG.ACG_VOID_STS = 'N'
+          and UPF.UPF_STATUS = 'ACT'
+        UNION
+        select UAC.UAC_ACC_GRP_ID
+        from R_UAC_USER_ACC_GRP UAC
+           , R_ACG_ACC_GRP ACG
+           , R_UPF_USER_PROFILE UPF
+        where UAC.UAC_USER_ID = #{userId}
+          and UAC.UAC_ACC_GRP_ID = ACG.ACG_ACC_GRP_ID
+          and UAC.UAC_USER_ID = UPF.UPF_USER_ID
+          and ACG.ACG_VOID_STS = 'N'
+          and UPF.UPF_STATUS = 'ACT'
+        UNION
+        select DRA.DRA_ACC_GRP_ID
+        from R_UPF_USER_PROFILE UPF
+           , R_DRA_DEPT_RANK_ACC_GRP DRA
+           , R_DEP_DEPT DEP
+           , R_RAN_RANK RAN
+           , R_DTR_DEPT_RANK DTR
+           , R_ACG_ACC_GRP ACG
+        where UPF.UPF_DEPARTMENT = DEP.DEP_CODE
+          and UPF.UPF_RANK = RAN.RAN_CODE
+          and DEP.DEP_CODE = DTR.DTR_DEPT
+          and RAN.RAN_CODE = DTR.DTR_RANK
+          and DTR.DTR_DEPT = DRA.DRA_DEPT
+          and DTR.DTR_RANK = DRA.DRA_RANK
+          and ACG.ACG_ACC_GRP_ID = DRA.DRA_ACC_GRP_ID
+          and DEP.DEP_VOID_STS = 'N'
+          and RAN.RAN_VOID_STS = 'N'
+          and DTR.DTR_VOID_STS = 'N'
+          and UPF.UPF_STATUS = 'ACT'
+          and ACG.ACG_VOID_STS = 'N'
+          and UPF.UPF_USER_ID = #{userId}
+    </sql>
+
+    <!--    <select id="isAuthorized2" resultMap="FunctionResultMap" parameterType="HashMap" >
+            select
+            a.*
+            from
+            ${R_}FNC_FUNCTION a
+            , ${R_}FAG_FUNCTION_ACC_GRP b
+            where
+            a.FNC_APPL_ID = #{applId}
+            and a.FNC_FUNC_ID = #{funcId}
+            and b.FAG_APPL_ID = a.FNC_APPL_ID
+            and b.FAG_PARENT_FUNC_ID = a.FNC_PARENT_FUNC_ID
+            and b.FAG_FUNC_ID = a.FNC_FUNC_ID
+            and b.FAG_ACC_GRP_ID in (
+            <include refid="getAccGroupsByUserId"/>
+            )
+            order by
+            a.FNC_PARENT_FUNC_ID
+            , a.FNC_FUNC_SEQ
+        </select>
+
+        <sql id="getAccGroupsByUserId">
+            select
+                AAG.AAG_ACC_GRP_ID
+            from
+                ${R_}UAD_USER_AD_GRP UAG
+               , ${R_}ADG_AD_GRP ADG
+               , ${R_}AAG_AD_GRP_ACC_GRP AAG
+               , ${R_}ACG_ACC_GRP ACG
+               , ${R_}UPF_USER_PROFILE UPF
+            where
+                UAG.UAD_USER_ID = #{userId}
+              and UAG.UAD_AD_GRP_ID = ADG.ADG_AD_GRP_ID
+              and ADG.ADG_AD_GRP_ID = AAG.AAG_AD_GRP_ID
+              and AAG.AAG_ACC_GRP_ID = ACG.ACG_ACC_GRP_ID
+              and UAG.UAD_USER_ID = UPF.UPF_USER_ID
+              and ADG.ADG_VOID_STS = 'N'
+              and ACG.ACG_VOID_STS = 'N'
+              and UPF.UPF_STATUS = 'ACT'
+            UNION
+            select
+                UAC.UAC_ACC_GRP_ID
+            from
+                ${R_}UAC_USER_ACC_GRP UAC
+               , ${R_}ACG_ACC_GRP ACG
+               , ${R_}UPF_USER_PROFILE UPF
+            where
+                UAC.UAC_USER_ID = #{userId}
+              and UAC.UAC_ACC_GRP_ID = ACG.ACG_ACC_GRP_ID
+              and UAC.UAC_USER_ID = UPF.UPF_USER_ID
+              and ACG.ACG_VOID_STS = 'N'
+              and UPF.UPF_STATUS = 'ACT'
+            UNION
+            select
+                DRA.DRA_ACC_GRP_ID
+            from
+                ${R_}UPF_USER_PROFILE UPF
+               , ${R_}DRA_DEPT_RANK_ACC_GRP DRA
+               , ${R_}DEP_DEPT DEP
+               , ${R_}RAN_RANK RAN
+               , ${R_}DTR_DEPT_RANK DTR
+               , ${R_}ACG_ACC_GRP ACG
+            where
+                UPF.UPF_DEPARTMENT = DEP.DEP_CODE
+              and UPF.UPF_RANK = RAN.RAN_CODE
+              and DEP.DEP_CODE = DTR.DTR_DEPT
+              and RAN.RAN_CODE = DTR.DTR_RANK
+              and DTR.DTR_DEPT = DRA.DRA_DEPT
+              and DTR.DTR_RANK = DRA.DRA_RANK
+              and ACG.ACG_ACC_GRP_ID = DRA.DRA_ACC_GRP_ID
+              and DEP.DEP_VOID_STS = 'N'
+              and RAN.RAN_VOID_STS = 'N'
+              and DTR.DTR_VOID_STS = 'N'
+              and UPF.UPF_STATUS = 'ACT'
+              and ACG.ACG_VOID_STS = 'N'
+              and UPF.UPF_USER_ID = #{userId}
+        </sql>-->
+
+</mapper>
