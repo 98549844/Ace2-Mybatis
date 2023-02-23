@@ -261,11 +261,5 @@
         </if>
     </select>
 
-    <!--
-        <foreach item="item" index="index" collection="groupList" open="(" separator="," close=")">
-            #{item,jdbcType=VARCHAR}
-        </foreach>
-        -->
-
 
 </mapper>
