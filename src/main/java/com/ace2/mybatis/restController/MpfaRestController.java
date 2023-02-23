@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -83,6 +84,36 @@ public class MpfaRestController {
         }
 
         return false;
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/mpfa/getAccGroupsByAccessRight")
+    public void getAccGroupsByAccessRight() {
+        String applId = "FWITM";
+        String className = "HolidayMaintHandler";
+        List<String> accessRights = new ArrayList<>();
+        accessRights.add("_READ");
+        accessRights.add("_UPD");
+        accessRights.add("_FULL");
+        accessRights.add("_DEL");
+        accessRights.add("_INS");
+
+        List<String> accRightList = mpfaMapper.getAccGroupsByAccessRight(applId, className, accessRights);
+        log.info("accRightList: " + accRightList.size());
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/mpfa/getUserIdsByAccGroups")
+    public void getUserIdsByAccGroups() {
+        //   String applId = "FWITM";
+        //   String className = "HolidayMaintHandler";
+        List<String> groupList = new ArrayList<>();
+        groupList.add("ACEDEMO");
+        groupList.add("SPRINGDEMO");
+        groupList.add("SDBDEMO_SCHEME");
+
+
+        log.info("groupList: " + groupList.size());
+        List<String> userIdsByAccGroups = mpfaMapper.getUserIdsByAccGroups(groupList);
+        log.info("getUserIdsByAccGroups: " + userIdsByAccGroups.size());
     }
 
 }

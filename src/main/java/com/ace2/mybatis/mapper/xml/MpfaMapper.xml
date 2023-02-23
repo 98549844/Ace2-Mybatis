@@ -127,7 +127,7 @@
     </sql>
 
 
-    <select id="getFunctions" resultMap="FunctionResultMap" parameterType="HashMap" >
+    <select id="getFunctions" resultMap="FunctionResultMap" parameterType="HashMap">
         select distinct
         a.*
         from
@@ -146,7 +146,7 @@
         , a.FNC_FUNC_SEQ
     </select>
 
-    <select id="getChildFunctions" resultMap="FunctionResultMap" parameterType="HashMap" >
+    <select id="getChildFunctions" resultMap="FunctionResultMap" parameterType="HashMap">
         select distinct
         a.*
         from
@@ -166,6 +166,106 @@
         , a.FNC_FUNC_SEQ
     </select>
 
+
+    <select id="getAccGroupsByAccessRight" resultType="java.lang.String" parameterType="java.util.HashMap">
+        select b.FAG_ACC_GRP_ID
+        from R_FNC_FUNCTION a
+        , R_FNC_FUNCTION c
+        , R_FAG_FUNCTION_ACC_GRP b
+        where a.FNC_APPL_ID = #{applId,jdbcType=VARCHAR}
+        and a.FNC_PROG_CLASS = #{className,jdbcType=VARCHAR}
+        and a.FNC_FUNC_TYP = 'PROG'
+        and c.FNC_PARENT_FUNC_ID = a.FNC_FUNC_ID
+        and c.FNC_FUNC_TYP = 'ACTION'
+        and b.FAG_APPL_ID = c.FNC_APPL_ID
+        and b.FAG_PARENT_FUNC_ID = c.FNC_PARENT_FUNC_ID
+        and b.FAG_FUNC_ID = c.FNC_FUNC_ID
+        <if test="accessRights != null and accessRights.size() !=0">
+            AND
+            <foreach item="item" index="index" collection="accessRights" open="(" separator="or" close=")">
+                C.FNC_FUNC_ID LIKE concat('%',#{item,jdbcType=VARCHAR})
+            </foreach>
+        </if>
+    </select>
+
+
+    <select id="getUserIdsByAccGroups" resultType="String" parameterType="HashMap">
+        select UAG.UAD_USER_ID "UID"
+        from R_UAD_USER_AD_GRP UAG
+        , R_ADG_AD_GRP ADG
+        , R_AAG_AD_GRP_ACC_GRP AAG
+        , R_ACG_ACC_GRP ACG
+        , R_UPF_USER_PROFILE UPF
+        where UAG.UAD_AD_GRP_ID = ADG.ADG_AD_GRP_ID
+        and ADG.ADG_AD_GRP_ID = AAG.AAG_AD_GRP_ID
+        and AAG.AAG_ACC_GRP_ID = ACG.ACG_ACC_GRP_ID
+        and UAG.UAD_USER_ID = UPF.UPF_USER_ID
+        and ADG.ADG_VOID_STS = 'N'
+        and ACG.ACG_VOID_STS = 'N'
+        and UPF.UPF_STATUS = 'ACT'
+        <if test="groupList != null and groupList.size() !=0">
+            and AAG.AAG_ACC_GRP_ID IN
+            <foreach item="item" index="index" collection="groupList" open="(" separator="," close=")">
+                #{item,jdbcType=VARCHAR}
+            </foreach>
+        </if>
+        <if test="groupList == null or groupList.size() ==0">
+            and AAG.AAG_ACC_GRP_ID IN ('')
+        </if>
+        UNION
+        select UAC.UAC_USER_ID "UID"
+        from R_UAC_USER_ACC_GRP UAC
+        , R_ACG_ACC_GRP ACG
+        , R_UPF_USER_PROFILE UPF
+        where UAC.UAC_ACC_GRP_ID = ACG.ACG_ACC_GRP_ID
+        and UAC.UAC_USER_ID = UPF.UPF_USER_ID
+        and ACG.ACG_VOID_STS = 'N'
+        and UPF.UPF_STATUS = 'ACT'
+        <if test="groupList != null and groupList.size() !=0">
+            and UAC.UAC_ACC_GRP_ID IN
+            <foreach item="item" index="index" collection="groupList" open="(" separator="," close=")">
+                #{item,jdbcType=VARCHAR}
+            </foreach>
+        </if>
+        <if test="groupList == null or groupList.size() ==0">
+            and UAC.UAC_ACC_GRP_ID IN ('')
+        </if>
+        UNION
+        select UPF.UPF_USER_ID "UID"
+        from R_UPF_USER_PROFILE UPF
+        , R_DRA_DEPT_RANK_ACC_GRP DRA
+        , R_DEP_DEPT DEP
+        , R_RAN_RANK RAN
+        , R_DTR_DEPT_RANK DTR
+        , R_ACG_ACC_GRP ACG
+        where UPF.UPF_DEPARTMENT = DEP.DEP_CODE
+        and UPF.UPF_RANK = RAN.RAN_CODE
+        and DEP.DEP_CODE = DTR.DTR_DEPT
+        and RAN.RAN_CODE = DTR.DTR_RANK
+        and DTR.DTR_DEPT = DRA.DRA_DEPT
+        and DTR.DTR_RANK = DRA.DRA_RANK
+        and ACG.ACG_ACC_GRP_ID = DRA.DRA_ACC_GRP_ID
+        and DEP.DEP_VOID_STS = 'N'
+        and RAN.RAN_VOID_STS = 'N'
+        and DTR.DTR_VOID_STS = 'N'
+        and UPF.UPF_STATUS = 'ACT'
+        and ACG.ACG_VOID_STS = 'N'
+        <if test="groupList != null and groupList.size() !=0">
+            and DRA.DRA_ACC_GRP_ID IN
+            <foreach item="item" index="index" collection="groupList" open="(" separator="," close=")">
+                #{item,jdbcType=VARCHAR}
+            </foreach>
+        </if>
+        <if test="groupList == null or groupList.size() ==0">
+            and DRA.DRA_ACC_GRP_ID IN ('')
+        </if>
+    </select>
+
+    <!--
+        <foreach item="item" index="index" collection="groupList" open="(" separator="," close=")">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+        -->
 
 
 </mapper>
