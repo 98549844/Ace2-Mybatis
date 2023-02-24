@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Classname: MpfaRestController
@@ -67,21 +69,30 @@ public class MpfaRestController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/mpfa/getFunctions")
     public boolean getFunctions() {
-        String applId = "FWFMG";
-        String funcId = "FMG001S01";
-        String userId = "USER1";
+        log.info("getFunctions: ");
 
-        List<Function> functions = mpfaService.getFunctions(applId, funcId);
+        final String applId = "FWFMG";
+        final String funcId = "FMG001S01";
+        //String funcId = null;
+        final String userId = "USER1";
+
+
+        Map<String, String> m = new HashMap();
+        m.put("applId", applId);
+        m.put("funcId", funcId);
+        m.put("userId", userId);
+
+      //  log.info("1");
+      //  List<Function> mlist = mpfaService.getFunctions(m);
+
+        log.info("2");
         List<Function> childFunctions = mpfaService.getFunctions(applId, funcId, userId);
 
-        for (Function f : functions) {
-            System.out.println(f);
-        }
         System.out.println("------------------------");
 
-        for (Function f : childFunctions) {
-            System.out.println(f);
-        }
+        log.info("3");
+        List<Function> functions = mpfaService.getFunctions(applId, userId);
+
 
         return false;
     }
@@ -115,6 +126,7 @@ public class MpfaRestController {
         List<String> userIdsByAccGroups = mpfaMapper.getUserIdsByAccGroups(groupList);
         log.info("getUserIdsByAccGroups: " + userIdsByAccGroups.size());
     }
+
 
 }
 

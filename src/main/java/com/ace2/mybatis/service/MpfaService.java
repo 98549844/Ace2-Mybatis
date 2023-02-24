@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Classname: MpfaMapperImpl
@@ -35,14 +36,28 @@ public class MpfaService {
         return mpfaMapper.getFunctions(applId, userId);
     }
 
+ /*   public List<Function> getFunctions(Map<String, String> m) {
+
+        return mpfaMapper.getFunctions(m);
+
+    }*/
 
     public List<Function> getFunctions(String applId, String funcId, String userId) {
 //        Map<String, String> map = new HashMap<String, String>();
 //        map.put("applId", applId);
 //        map.put("funcId", funcId);
 //        map.put("userId", userId);
+        return mpfaMapper.getFunctions(applId, userId, userId);
+    }
+
+    public List<Function> getChildFunctions(String applId, String funcId, String userId) {
+//        Map<String, String> map = new HashMap<String, String>();
+//        map.put("applId", applId);
+//        map.put("funcId", funcId);
+//        map.put("userId", userId);
         return mpfaMapper.getChildFunctions(applId, userId, userId);
     }
+
 
 }
 

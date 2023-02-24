@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Classname: MpfaMapper
@@ -32,6 +33,16 @@ public interface MpfaMapper {
     List<Function> getFunctions(@Param("applId") String applId, @Param("userId") String userId);
 
     List<Function> getFunctions(@Param("applId") String applId, @Param("funcId") String funcId, @Param("userId") String userId);
+
+
+
+
+
+
+//    List<Function> getFunctions(String applId, String userId);
+    // List<Function> getFunctions(String applId, String funcId, String userId);
+
+    //  List<Function> getFunctions(Map<String, String> m);
 
     List<Function> getChildFunctions(@Param("applId") String applId, @Param("funcId") String funcId, @Param("userId") String userId);
 
