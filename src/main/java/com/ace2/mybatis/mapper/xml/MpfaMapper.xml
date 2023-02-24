@@ -135,6 +135,9 @@
         , R_FAG_FUNCTION_ACC_GRP b
         where
         a.FNC_APPL_ID = #{applId}
+          <if test="funcId != null">
+              and a.FNC_PARENT_FUNC_ID = #{funcId}
+          </if>
         and b.FAG_APPL_ID = a.FNC_APPL_ID
         and b.FAG_PARENT_FUNC_ID = a.FNC_PARENT_FUNC_ID
         and b.FAG_FUNC_ID = a.FNC_FUNC_ID
