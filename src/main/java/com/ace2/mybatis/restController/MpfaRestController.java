@@ -73,25 +73,15 @@ public class MpfaRestController {
 
         final String applId = "FWFMG";
         final String funcId = "FMG001S01";
-        //String funcId = null;
         final String userId = "USER1";
 
 
-        Map<String, String> m = new HashMap();
-        m.put("applId", applId);
-        m.put("funcId", funcId);
-        m.put("userId", userId);
-
-      //  log.info("1");
-      //  List<Function> mlist = mpfaService.getFunctions(m);
-
-        log.info("2");
-        List<Function> childFunctions = mpfaService.getFunctions(applId, funcId, userId);
+        List<Function> childFunctions = mpfaService.getChildFunctions(applId, funcId, userId);
 
         System.out.println("------------------------");
 
-        log.info("3");
         List<Function> functions = mpfaService.getFunctions(applId, userId);
+
 
 
         return false;

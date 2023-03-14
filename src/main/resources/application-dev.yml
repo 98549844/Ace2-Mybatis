@@ -29,6 +29,7 @@ mybatis:
 logging:
   level:
     com:
-      example:
-        mapper: debug
+      ace2:
+        mybatis:
+          mapper: debug
 

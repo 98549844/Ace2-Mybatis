@@ -30,31 +30,14 @@ public class MpfaService {
 
 
     public List<Function> getFunctions(String applId, String userId) {
-//        Map<String, String> map = new HashMap<String, String>();
-//        map.put("applId", applId);
-//        map.put("userId", userId);
         return mpfaMapper.getFunctions(applId, userId);
     }
 
- /*   public List<Function> getFunctions(Map<String, String> m) {
-
-        return mpfaMapper.getFunctions(m);
-
-    }*/
-
     public List<Function> getFunctions(String applId, String funcId, String userId) {
-//        Map<String, String> map = new HashMap<String, String>();
-//        map.put("applId", applId);
-//        map.put("funcId", funcId);
-//        map.put("userId", userId);
         return mpfaMapper.getFunctions(applId, userId, userId);
     }
 
     public List<Function> getChildFunctions(String applId, String funcId, String userId) {
-//        Map<String, String> map = new HashMap<String, String>();
-//        map.put("applId", applId);
-//        map.put("funcId", funcId);
-//        map.put("userId", userId);
         return mpfaMapper.getChildFunctions(applId, userId, userId);
     }
 

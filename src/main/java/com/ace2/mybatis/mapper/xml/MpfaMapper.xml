@@ -157,13 +157,13 @@
         , R_FAG_FUNCTION_ACC_GRP b
         where
         a.FNC_APPL_ID = #{applId}
-        and a.FNC_PARENT_FUNC_ID = #{funcId}
         and b.FAG_APPL_ID = a.FNC_APPL_ID
         and b.FAG_PARENT_FUNC_ID = a.FNC_PARENT_FUNC_ID
         and b.FAG_FUNC_ID = a.FNC_FUNC_ID
         and b.FAG_ACC_GRP_ID in (
         <include refid="getAccGroupsByUserId"/>
         )
+        and a.FNC_PARENT_FUNC_ID = #{funcId}
         order by
         a.FNC_PARENT_FUNC_ID
         , a.FNC_FUNC_SEQ

@@ -34,16 +34,6 @@ public interface MpfaMapper {
 
     List<Function> getFunctions(@Param("applId") String applId, @Param("funcId") String funcId, @Param("userId") String userId);
 
-
-
-
-
-
-//    List<Function> getFunctions(String applId, String userId);
-    // List<Function> getFunctions(String applId, String funcId, String userId);
-
-    //  List<Function> getFunctions(Map<String, String> m);
-
     List<Function> getChildFunctions(@Param("applId") String applId, @Param("funcId") String funcId, @Param("userId") String userId);
 
     List<String> getAccGroupsByAccessRight(@Param("applId") String applId, @Param("className") String className, @Param("accessRights") List<String> accessRights);
